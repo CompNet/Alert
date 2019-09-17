@@ -36,7 +36,7 @@ def compute_all_features(messages_train, messages_test, Y_train, Y_test):
 		for message in messages_test[i]:
 			features_msg = compute_morphological_features(message)
 			features_part.append(features_msg)
-		features_test.append(features_part)
+		features_test.append(features_part) 
 
 		tfidfPosScore, tfidfNegScore = tfidf_scores(messages_train[i], Y_train[i], messages_test[i])
 		posScore, negScore, cPosScore, cNegScore = comment_polarization_scores(messages_train[i], Y_train[i], messages_test[i])

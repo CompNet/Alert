@@ -23,6 +23,8 @@ class SVMClassifier(Classifier):
         self.classifier.fit(features_train_scaled, labels_train)
 
     def predict(self, features_test, labels_test):
-    	features_test_scaled = self.scaler.transform(features_test)
-    	predictions = self.classifier.predict(features_test_scaled)
-    	return predictions
+        features_test_scaled = self.scaler.transform(features_test)
+        predictions = self.classifier.predict(features_test_scaled)
+        predictions_proba = self.classifier.predict_proba(features_test_scaled)
+        predictions_p = [p[1] for p in predictions_proba]
+        return predictions, predictions_p

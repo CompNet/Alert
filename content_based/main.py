@@ -5,8 +5,8 @@ from Metrics import *
 
 if __name__ == '__main__':
     p = ap.ArgumentParser()
-    p.add_argument("-g", "--groundtruth", help="File containing the labels for all messages.", type = str)
-    p.add_argument("-md", "--messagesdir", help="Directory containing all conversation files.", type = str)
+    p.add_argument("-g", "--groundtruth", help="File containing the labels for all messages.", type = str, default="/home/noe/Dropbox/Stage/GitHub/Data/context/groundtruth.csv")
+    p.add_argument("-md", "--messagesdir", help="Directory containing all conversation files.", type = str, default="/home/noe/Dropbox/Stage/GitHub/Data/context/csv")
     p.add_argument("-vm", "--validation-method", choices=["basic", "cv"], help="Validation method to use: basic or cross validation", type = str, default = 'basic')
     p.add_argument("-train", help="File containing Ids of all messages in train split", type = str)
     p.add_argument("-test", help="File containing Ids of all messages in test split", type = str)
@@ -42,3 +42,4 @@ if __name__ == '__main__':
     # Test classifier
     a.test()
     a.evaluate(F1Evaluator())
+    a.evaluate(AUCEvaluator())

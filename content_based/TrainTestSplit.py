@@ -42,4 +42,4 @@ class TrainTestSplit:
         features_test = [message.getFeatures() for message in self.test]
         labels_test = [message.get_label() for message in self.test]
         self.true_labels = labels_test
-        self.predictions = self.classifier.predict(features_test, labels_test)
+        self.predictions, self.predictions_proba = self.classifier.predict(features_test, labels_test)

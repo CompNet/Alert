@@ -76,6 +76,7 @@ class Alert(ABC):
                 messages.append(message)
 
         groundtruth.close()
+        messages = messages[:500]
         return messages    
 
 class AlertBasic(Alert):

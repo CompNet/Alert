@@ -35,33 +35,6 @@ class F1Evaluator:
         res += "weighted F-measure: " + str(f1_score(Y_true, Y_pred, average='weighted', pos_label=1)) + "\n"
         print (res)
 
-        ok = 0
-        fp, fn = 0, 0
-        tp, tn = 0, 0
-        nAbuses = 0
-        for r in range(len(Y_true)):
-            if Y_pred[r] == Y_true[r]:
-                ok += 1
-            if Y_true[r] == 1:
-                if Y_pred[r] == 1:
-                    tp += 1
-                if Y_pred[r] == 0:
-                    fn += 1
-                nAbuses += 1
-            if Y_true[r] == 0:
-                if Y_pred[r] == 1:
-                    fp += 1
-                if Y_pred[r] == 0:
-                    tn += 1
-
-        rec = tp / float(nAbuses)
-        pre = tp / float(tp + fp)
-        acc = ok / float(len(Y_pred))
-        fme = 2*((pre*rec)/(pre+rec))
-        print ("Average Precision: %0.4f" % pre)
-        print ("Average Recall: %0.4f" % rec)
-        print ("Average Accuracy: %0.4f" % acc)
-        print ("Average F-measure: %s" % fme)
 
 class AUCEvaluator:
 

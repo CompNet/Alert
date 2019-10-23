@@ -43,3 +43,5 @@ if __name__ == '__main__':
     a.test()
     a.evaluate(F1Evaluator())
     a.evaluate(AUCEvaluator())
+
+    #a.save_split()

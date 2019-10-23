@@ -19,8 +19,8 @@ class Feature(ABC):
     def tokenize(message):
         words = message.split(" ")
         #Filter empty strings
-        words = list(filter(None, words))
-        return words
+        res = [x for x in words if x != None]
+        return res
 
     #Collapse the message when there are 3 or more identical consecutive characters
     @staticmethod
@@ -369,7 +369,7 @@ class posScore(Feature):
 
     def compute(self, train_corpus, test_corpus):
         if self.dic_non_abuse is None:
-            self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
+            self.create_abuse_nonabuse_dictionary(train_corpus)
         for message in train_corpus + test_corpus:
             words = Feature.tokenize(message.getText())
             posScore = 0.0
@@ -382,7 +382,7 @@ class negScore(Feature):
 
     def compute(self, train_corpus, test_corpus):
         if self.dic_abuse is None:
-            self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
+            self.create_abuse_nonabuse_dictionary(train_corpus)
         for message in train_corpus + test_corpus:
             words = Feature.tokenize(message.getText())
             negScore = 0.0
@@ -395,7 +395,7 @@ class posScore_collapsed(Feature):
 
     def compute(self, train_corpus, test_corpus):
         if self.dic_non_abuse is None:
-            self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
+            self.create_abuse_nonabuse_dictionary(train_corpus)
         for message in train_corpus + test_corpus:
             words = Feature.tokenize(message.getText())
             posScore_collapsed = 0.0
@@ -409,7 +409,7 @@ class negScore_collapsed(Feature):
 
     def compute(self, train_corpus, test_corpus):
         if self.dic_abuse is None:
-            self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
+            self.create_abuse_nonabuse_dictionary(train_corpus)
         for message in train_corpus + test_corpus:
             words = Feature.tokenize(message.getText())
             negScore_collapsed = 0.0

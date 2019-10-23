@@ -22,8 +22,8 @@ nBadwords
 nHiddenBadwords
 tfidf_nonabuse
 tfidf_abuse
-NB
 posScore
 negScore
-negScore_collapsed
 posScore_collapsed
+negScore_collapsed
+NB

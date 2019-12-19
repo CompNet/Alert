@@ -67,7 +67,7 @@ def compute_features(train, test, comments, feature_list_file):
          feature_list_file: File containing the name of all features to compute.
 
         Returns:
-         train_features, test_features: lists of tuples with 1 tuple (rev_id, [features], annotation) for each message.
+         
 
     """
     #list of tuples (rev_id, [features], [features_temporary], comment, annotation)

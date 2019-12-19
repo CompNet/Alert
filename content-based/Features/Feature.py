@@ -39,7 +39,7 @@ class Feature(ABC):
     @staticmethod
     def create_tf_idf(message_corpus):
         vectorizer = TfidfVectorizer()
-        text_corpus = [message.getText() for message in message_corpus]
+        text_corpus = [message[3] for message in message_corpus]
         vectorizer = vectorizer.fit(text_corpus)
         return vectorizer
 
@@ -53,7 +53,7 @@ class Feature(ABC):
         space = 0
         cap = 0
 
-        for char in message.getText():
+        for char in message[3]:
             if char.isupper():
                 cap += 1
             if char.isalpha():
@@ -67,7 +67,7 @@ class Feature(ABC):
             else:
                 other += 1
         #ratios
-        total = len(message.getText())
+        total = len(message[3])
         if total > 0:
             features['alpha_r'] = alpha*1.0 / total
             features['digit_r'] = digit*1.0 / total
@@ -89,13 +89,14 @@ class Feature(ABC):
         features['other'] = other
         features['space'] = space
         features['cap'] = cap
-        message.set_tmp_features(features)
+
+        message[2].update(features)
 
     @staticmethod
     def compute_word_frequency(corpus):
         dic = {}
         for message in corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             for word in words:
                 if word in dic:
                     dic[word] += 1
@@ -104,10 +105,10 @@ class Feature(ABC):
         return dic
 
     def create_abuse_nonabuse_dictionary(self, corpus):
-        corpus_non_abuse = [message for message in corpus if message.label == 0]
-        corpus_abuse = [message for message in corpus if message.label == 1]
-        nonabuse_text = [message.getText() for message in corpus_non_abuse]
-        abuse_text = [message.getText() for message in corpus_abuse]
+        corpus_non_abuse = [message for message in corpus if int(message[4]) == 0]
+        corpus_abuse = [message for message in corpus if int(message[4]) == 1]
+        nonabuse_text = [message[3] for message in corpus_non_abuse]
+        abuse_text = [message[3] for message in corpus_abuse]
         self.dic_non_abuse = Feature.compute_word_frequency(corpus_non_abuse)
         self.dic_abuse = Feature.compute_word_frequency(corpus_abuse)
 
@@ -117,23 +118,23 @@ class cLength(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            length = len(message.getText())
-            message.add_feature("cLength", length)
+            length = len(message[3])
+            message[1].append(length)
 
 
 class nWords(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             nb = len(words)
-            message.add_feature("nWords", nb)
+            message[1].append(nb)
 
 class avgwLen(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             total_len = 0
             for word in words:
                 total_len += len(word) 
@@ -141,152 +142,152 @@ class avgwLen(Feature):
                 avgLength = total_len*1.0 / len(words)
             else:
                 avgLength = 0
-            message.add_feature("avgwLen", avgLength)
+            message[1].append(avgLength)
 
 class uniqueChars(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            chars = set(message.getText())
+            chars = set(message[3])
             nb_chars = len(chars)
-            message.add_feature("uniqueChars", nb_chars)
+            message[1].append(nb_chars)
 
 class uniqueWords(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             nbwords = len(set(words))
-            message.add_feature("uniqueWords", nbwords)
+            message[1].append(nbwords)
 
 class collapseN(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            mess_len = len(message.getText())
-            collapsed_mess = Feature.collapse(message.getText())
+            mess_len = len(message[3])
+            collapsed_mess = Feature.collapse(message[3])
             collapsed_mess_len = len(collapsed_mess)
             nb = mess_len - collapsed_mess_len
-            message.add_feature("collapseN", nb)
+            message[1].append(nb)
 
 class longest(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             maxlen = -1
             for word in words:
                 if (len(word) > maxlen):
                     maxlen = len(word)
-            message.add_feature("longest", maxlen)
+            message[1].append(maxlen)
 
 class cRatio(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            compressed = compress(message.getText())
-            base = len(message.getText())
+            compressed = compress(message[3])
+            base = len(message[3])
             if base > 0:
                 ratio = len(compressed)*1.0 / base
             else:
                 ratio = 1
-            message.add_feature("cRatio", ratio)
+            message[1].append(ratio)
 
 class alpha(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("alpha", message.tmp_features['alpha'])
+            message[1].append(message[2]['alpha'])
 
 class alpha_r(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("alpha_r", message.tmp_features['alpha_r'])
+            message[1].append(message[2]['alpha_r'])
 
 class digit(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("digit", message.tmp_features['digit'])
+            message[1].append(message[2]['digit'])
 
 class digit_r(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("digit_r", message.tmp_features['digit_r'])
+            message[1].append(message[2]['digit_r'])
 
 class punctuation(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("punctuation", message.tmp_features['punctuation'])
+            message[1].append(message[2]['punctuation'])
 
 class punctuation_r(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("punctuation_r", message.tmp_features['punctuation_r'])
+            message[1].append(message[2]['punctuation_r'])
 
 class other(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("other", message.tmp_features['other'])
+            message[1].append(message[2]['other'])
 
 class other_r(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("other_r", message.tmp_features['other_r'])
+            message[1].append(message[2]['other_r'])
 
 class space(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("space", message.tmp_features['space'])
+            message[1].append(message[2]['space'])
 
 class space_r(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("space_r", message.tmp_features['space_r'])
+            message[1].append(message[2]['space_r'])
 
 class cap(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("cap", message.tmp_features['cap'])
+            message[1].append(message[2]['cap'])
 
 class cap_r(Feature):
 
     def compute(self, train_corpus, test_corpus):
         for message in train_corpus + test_corpus:
-            if message.tmp_features is None:
+            if len(message[2]) == 0:
                 Feature.compute_character_class(message)
-            message.add_feature("cap_r", message.tmp_features['cap_r'])
+            message[1].append(message[2]['cap_r'])
 
 
 class nBadwords(Feature):
@@ -299,11 +300,11 @@ class nBadwords(Feature):
         f.close()
         for message in train_corpus + test_corpus:
             nb = 0
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             for word in words:
                 if word in bad_words:
                     nb += 1
-            message.add_feature("nBadwords", nb)
+            message[1].append(nb)
 
 class nHiddenBadwords(Feature):
 
@@ -315,53 +316,53 @@ class nHiddenBadwords(Feature):
         f.close()
         for message in train_corpus + test_corpus:
             nb = 0
-            words = Feature.tokenize(Feature.collapse(message.getText()))
+            words = Feature.tokenize(Feature.collapse(message[3]))
             for word in words:
                 if word in bad_words:
                     nb += 1
-            message.add_feature("nHiddenBadwords", nb)
+            message[1].append(nb)
 
 class tfidf_nonabuse(Feature):
 
     def compute(self, train_corpus, test_corpus):
-        corpus_non_abuse = [message for message in train_corpus if message.label == 0]
+        corpus_non_abuse = [message for message in train_corpus if int(message[4]) == 0]
         tfidf_non_abuse = Feature.create_tf_idf(corpus_non_abuse)
 
         for message in train_corpus + test_corpus:
-            score = tfidf_non_abuse.transform([message.getText()])
+            score = tfidf_non_abuse.transform([message[3]])
             score_non_abuse = score.sum()
-            message.add_feature("tfidf_nonabuse", score_non_abuse)
+            message[1].append(score_non_abuse)
 
 class tfidf_abuse(Feature):
 
     def compute(self, train_corpus, test_corpus):
-        corpus_abuse = [message for message in train_corpus if message.label == 1]
+        corpus_abuse = [message for message in train_corpus if int(message[4]) == 1]
         tfidf_abuse = Feature.create_tf_idf(corpus_abuse)
 
         for message in train_corpus + test_corpus:
-            score = tfidf_abuse.transform([message.getText()])
+            score = tfidf_abuse.transform([message[3]])
             score_abuse = score.sum()
-            message.add_feature("tfidf_abuse", score_abuse)
+            message[1].append(score_abuse)
 
 class NB(Feature):
 
     def compute(self, train_corpus, test_corpus):
         bow = self.create_bow(train_corpus+test_corpus)
-        train_text = [message.getText() for message in train_corpus]
+        train_text = [message[3] for message in train_corpus]
         train = bow.transform(train_text)
-        train_labels = [message.get_label() for message in train_corpus]
+        train_labels = [int(message[4]) for message in train_corpus]
         clf = MultinomialNB()
         clf = clf.fit(train, train_labels)
 
         for message in train_corpus + test_corpus:
-            test = bow.transform([message.getText()])
+            test = bow.transform([message[3]])
             res = clf.predict_proba(test)
-            message.add_feature("NB", res[0][1])
+            message[1].append(res[0][1])
 
     #build a BoW from the corpus
     def create_bow(self, corpus):
         vectorizer = CountVectorizer()
-        text_corpus = [message.getText() for message in corpus]
+        text_corpus = [message[3] for message in corpus]
         vectorizer = vectorizer.fit(text_corpus)
         return vectorizer
 
@@ -371,12 +372,12 @@ class posScore(Feature):
         if self.dic_non_abuse is None:
             self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             posScore = 0.0
             for word in words:
                 if word in self.dic_non_abuse:
                     posScore += math.log(self.dic_non_abuse[word])
-            message.add_feature("posScore", posScore)
+            message[1].append(posScore)
 
 class negScore(Feature):
 
@@ -384,12 +385,12 @@ class negScore(Feature):
         if self.dic_abuse is None:
             self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             negScore = 0.0
             for word in words:
                 if word in self.dic_abuse:
                     negScore += math.log(self.dic_abuse[word])
-            message.add_feature("negScore", negScore)
+            message[1].append(negScore)
 
 class posScore_collapsed(Feature):
 
@@ -397,13 +398,13 @@ class posScore_collapsed(Feature):
         if self.dic_non_abuse is None:
             self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             posScore_collapsed = 0.0
             for word in words:
                 word_collapsed = Feature.collapse(word)
                 if word_collapsed in self.dic_non_abuse:
                     posScore_collapsed += math.log(self.dic_non_abuse[word_collapsed])
-            message.add_feature("posScore_collapsed", posScore_collapsed)
+            message[1].append(posScore_collapsed)
 
 class negScore_collapsed(Feature):
 
@@ -411,10 +412,10 @@ class negScore_collapsed(Feature):
         if self.dic_abuse is None:
             self.create_abuse_nonabuse_dictionary(train_corpus+test_corpus)
         for message in train_corpus + test_corpus:
-            words = Feature.tokenize(message.getText())
+            words = Feature.tokenize(message[3])
             negScore_collapsed = 0.0
             for word in words:
                 word_collapsed = Feature.collapse(word)
                 if word_collapsed in self.dic_abuse:
                     negScore_collapsed += math.log(self.dic_abuse[word_collapsed])
-            message.add_feature("negScore_collapsed", negScore_collapsed)
+            message[1].append(negScore_collapsed)

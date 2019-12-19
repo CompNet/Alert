@@ -1,45 +1,49 @@
 import argparse as ap
-from Alert import *
+import pickle
+from ContentMethod import *
 from Classifier import *
 from Metrics import *
 
 if __name__ == '__main__':
     p = ap.ArgumentParser()
-    p.add_argument("-g", "--groundtruth", help="File containing the labels for all messages.", type = str, default="/home/noe/Dropbox/Stage/GitHub/Data/context/groundtruth.csv")
-    p.add_argument("-md", "--messagesdir", help="Directory containing all conversation files.", type = str, default="/home/noe/Dropbox/Stage/GitHub/Data/context/csv")
-    p.add_argument("-vm", "--validation-method", choices=["basic", "cv"], help="Validation method to use: basic or cross validation", type = str, default = 'basic')
+    p.add_argument("-a", "--annotations", help="File containing the annotations for all messages. File generated using transform_annotation_file.py", type = str)
+    p.add_argument("-md", "--messagesdir", help="Directory containing all conversation files (rev_id_conversation.txt files from figshare)", type = str)
     p.add_argument("-train", help="File containing Ids of all messages in train split", type = str)
     p.add_argument("-test", help="File containing Ids of all messages in test split", type = str)
-    p.add_argument("-cvnb", "--cv-number", help="Number of folds to use in the cross validation", type = int)
-    p.add_argument("-r", "--traintest-repartition", help="Percentage of folds to use in the test subset", type = int, default = 30)
-    p.add_argument("-f", "--features", help="File containing the subset of features to use", type = str, default="features.txt")
-    p.add_argument("-c", "--classifier", help="Type of classifier to use", type = str, default="svm")
+    p.add_argument("-clf", "--classifier", help="Type of classifier to use", type = str, default="svm")
+    p.add_argument("-f", "--features", help="File containing the subset of features to use", type = str)
     args = p.parse_args()
 
-    #Create system
-    if args.validation_method == "basic":
-        a = AlertBasic(args.traintest_repartition)
-    elif args.validation_method == "cv":
-        a = AlertCrossValidation(args.cv_number, args.traintest_repartition)
-
     #Load data
-    messages = a.load_data(args.groundtruth, args.messagesdir)
-
-    #Split data
-    if args.train is not None and args.test is not None:
-        a.fixed_split(messages, args.train, args.test)
-    else:
-        a.random_split(messages)
-
+    #Obtain dict associating rev_id to the annotation of each messages in train and test splits
+    train, test, comments = fixed_split(args.train, args.test, args.annotations, args.messagesdir)
     #Compute features
-    a.compute_features(args.features)
+    train_feat, test_feat = compute_features(train, test, comments, args.features)
+
+    '''
+    save = open("train.pkl", 'wb') 
+    pickle.dump(train_feat, save)
+    save.close()
+    save = open("test.pkl", 'wb') 
+    pickle.dump(test_feat, save)
+    save.close()
+    with open("test.pkl", 'rb') as file:
+        test_feat = pickle.load(file)
+    file.close()
+    with open("train.pkl", 'rb') as file:
+        train_feat = pickle.load(file)
+    file.close()
+    '''
 
     # Train classifier
+    #it is possible to implement and use other classifiers
     if args.classifier == "svm":
         clf = SVMClassifier()
-    a.train(clf)
+    clf.fit(train_feat)
 
-    # Test classifier
-    a.test()
-    a.evaluate(F1Evaluator())
-    a.evaluate(AUCEvaluator())
+    # Test 
+    clf.predict(test_feat)
+
+    # Performances
+    metric = F1Evaluator()
+    metric.evaluate(clf)

@@ -2,7 +2,7 @@ Alert
 =======
 *Abusive Language Detection in Online Conversations by Combining Content- and Graph-Based Features*
 
-* Copyright 2018-20 Noé Cécillon & Vincent Labatut
+* Copyright 2018-20 Noé Cécillon
 
 Alert is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation. For source availability and license information see `LICENCE`
 
@@ -12,25 +12,28 @@ Alert is free software: you can redistribute it and/or modify it under the terms
 
 -----------------------------------------------------------------------
 
+
 # Description
-This software was designed to detect abusive messages in online conversations. Two approaches are implemented : a *content-based* approach and a *graph-based* approach. See reference [Soc2Net'19] for more details.
+This software was designed to detect abusive messages in online conversations. It is a complete reimplementation and a much extended version of the software used in [PLDL'17, PLDL'17a, PLDL'17b, PLDL'18, PLDL'19]. Two main approaches are implemented: a *content-based* approach and a *graph-based* approach, which can also be used jointly. This software was used in [C'19, CLDL'19, CLDL'20] (cf. these papers for more details).
+
 
 # Data
-This software was applied to a corpus of Wikipedia conversations annotated for 3 types of abuse. The data and annotations are available on [FigShare](https://figshare.com/articles/Wikipedia_Abusive_Conversations/11299118).
+This software was applied to a corpus of chat messages written in French, whih unfortunately cannot be published due to legal matters [PLDL'17, PLDL'17a, PLDL'17b, PLDL'18, PLDL'19, C'19, CLDL'19]. It was also applied to some public data: a corpus of Wikipedia conversations annotated for 3 types of abuse [CLDL'20]. These data and annotations are available on [FigShare](https://figshare.com/articles/Wikipedia_Abusive_Conversations/11299118).
+
 
 # Organization
 Here are the folders composing the project:
 * Folder `content-based`: contains the source code of the *content-based* approach.
     * Folder `Features`: contains the scripts to compute features.
-    * `bad_words.txt`: the static list of french badwords used in [Soc2Net'19].
+    * `bad_words.txt`: the static list of french badwords used in [CLDL'19].
     * `features.txt`: the list of all available features.
 * Folder `graph-based`: contains the source code of the *graph-based* approach.
-    * Folder `Features`: contains the scripts to compute features.
-* Folder `train-dev-test`: contains the train, development and test splits that we used in [LREC'20].
+    * Folder `Features`: contains the scripts that compute the features.
+* Folder `train-dev-test`: contains the train, development and test splits that we used in [CLDL'20].
 
 
 # Use
-1. For *content-based* approach, run the main script `content-based/main.py` with the following arguments.
+1. For the *content-based* approach, run the main script `content-based/main.py` with the following arguments:
     * `annotations`: Path to the file containing annotations such as *annotations_attack.csv* on [FigShare](https://figshare.com/articles/Wikipedia_Abusive_Conversations/11299118).
     * `messagesdir`: Path to the directory containing all conversation files.
     * `train`: Path to the file containing Ids of all messages in train split. Examples are available in `train-dev-test` folder.
@@ -47,7 +50,12 @@ Here are the folders composing the project:
     * `directed`: To use directed graphs.
 
 
-
 # References
-* **[Soc2Net'19]** N. Cécillon, V. Labatut, R. Dufour & G. Linarès. *Abusive Language Detection in Online Conversations by Combining Content- and Graph-Based Features*, 2019. [doi: 10.3389/fdata.2019.00008](https://doi.org/10.3389/fdata.2019.00008) - [⟨hal-02130205](https://hal.archives-ouvertes.fr/hal-02130205)
-* **[LREC'20]** N. Cécillon, V. Labatut, R. Dufour & G. Linarès. *WAC: A Corpus of Wikipedia Conversations for Online Abuse Detection*, 2020. [⟨hal-02497514](https://hal.archives-ouvertes.fr/hal-02497514)
+* **[PLDL'17]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Detection of abusive messages in an on-line community*, 14ème Conférence en Recherche d'Information et Applications (CORIA), Marseille, FR, p.153–168, 2017. [doi: 10.24348/coria.2017.16](https://doi.org/10.24348/coria.2017.16) - [⟨hal-01505017⟩](https://hal.archives-ouvertes.fr/hal-01505017)
+* **[PLDL'17a]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Graph-based Features for Automatic Online Abuse Detection*, 5th International Conference on Statistical Language and Speech Processing (SLSP), Le Mans, FR, Lecture Notes in Artificial Intelligence, 10583:70-81, 2017. [doi: 10.1007/978-3-319-68456-7_6](https://doi.org/10.1007/978-3-319-68456-7_6) - [⟨hal-01571639⟩](https://hal.archives-ouvertes.fr/hal-01571639)
+* **[PLDL'17b]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Détection de messages abusifs au moyen de réseaux conversationnels*, 8ème Conférence sur les modèles et lánalyse de réseaux : approches mathématiques et informatiques (MARAMI), La Rochelle, FR, 2017. [⟨hal-01614279⟩](https://hal.archives-ouvertes.fr/hal-01614279)
+* **[PLDL'18]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Impact Of Content Features For Automatic Online Abuse Detection*, 18th International Conference on Computational Linguistics and Intelligent Text Processing (CICling 2017), Budapest, HU, Lecture Notes in Computer Science, 10762:153–168, 2018. [doi: 10.1007/978-3-319-77116-8_30](https://doi.org/10.1007/978-3-319-77116-8_30) - [⟨hal-01505502⟩](https://hal.archives-ouvertes.fr/hal-01505502)
+* **[PLDL'19]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Conversational Networks for Automatic Online Moderation*, IEEE Transactions on Computational Social Systems, 6(1):38–55, 2019. [doi: 10.1109/TCSS.2018.2887240](https://doi.org/10.1109/TCSS.2018.2887240) - [⟨hal-01999546⟩](https://hal.archives-ouvertes.fr/hal-01999546)
+* **[C'19]** N. Cécillon. *Exploration de caractéristiques d’embeddings de graphes pour la détection de messages abusifs*, MSc Thesis, Avignon Université, Centre d'Enseignement et de Recherche en Informatique (CERI), Avignon, FR, 2019.
+* **[CLDL'19]** N. Cécillon, V. Labatut, R. Dufour & G. Linarès. *Abusive Language Detection in Online Conversations by Combining Content- and Graph-Based Features*, IAAA ICWSM International Workshop on Modeling and Mining Socia-Media Driven Complex Networks (Soc2Net), Munich, DE, Frontiers in Big Data 2:8, 2019. [doi: 10.3389/fdata.2019.00008](https://doi.org/10.3389/fdata.2019.00008) - [⟨hal-02130205⟩](https://hal.archives-ouvertes.fr/hal-02130205)
+* **[CLDL'20]** N. Cécillon, V. Labatut, R. Dufour & G. Linarès. *WAC: A Corpus of Wikipedia Conversations for Online Abuse Detection*, 12th Language Resources and Evaluation Conference (LREC), Marseille, FR, p.1375–1383, 2020. [Conference version](http://www.lrec-conf.org/proceedings/lrec2020/pdf/2020.lrec-1.172.pdf) - [⟨hal-02497514⟩](https://hal.archives-ouvertes.fr/hal-02497514)

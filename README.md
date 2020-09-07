@@ -8,7 +8,7 @@ Alert is free software: you can redistribute it and/or modify it under the terms
 
 * Lab site: http://lia.univ-avignon.fr/
 * GitHub repo: https://github.com/CompNet/Alert
-* Contact: Nejat Arinik <noe.cecillon@univ-avignon.fr>
+* Contact: Noé Cécillon <noe.cecillon@univ-avignon.fr>
 
 -----------------------------------------------------------------------
 

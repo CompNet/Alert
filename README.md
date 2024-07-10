@@ -18,7 +18,7 @@ This software was designed to detect abusive messages in online conversations. I
 
 
 # Data
-This software was applied to a corpus of chat messages written in French, whih unfortunately cannot be published due to legal matters [[PLDL'17, PLDL'17a, PLDL'17b, PLDL'18, PLDL'19, C'19, CLDL'19](#references)]. It was also applied to some public data: a corpus of Wikipedia conversations annotated for 3 types of abuse [[CLDL'20](#references)]. These data and annotations are available on [Zenodo](https://doi.org/10.5281/zenodo.6817093).
+This software was applied to a corpus of chat messages written in French, whih unfortunately cannot be published due to legal matters [[PLDL'17, PLDL'17a, PLDL'17b, PLDL'18, PLDL'19, C'19, CLDL'19](#references)]. The conversational graphs extracted from these messages are publicly available on [Zenodo](https://doi.org/10.5281/zenodo.6815312), though, and can be used by this softwaree. It was also applied to some public data: a corpus of Wikipedia conversations annotated for 3 types of abuse [[CLDL'20](#references)], which is also available on [Zenodo](https://doi.org/10.5281/zenodo.6817093).
 
 
 # Organization

@@ -12,16 +12,29 @@ Alert is free software: you can redistribute it and/or modify it under the terms
 
 -----------------------------------------------------------------------
 
-
-# Description
+## Description
 This software was designed to detect abusive messages in online conversations. It is a complete reimplementation and a much extended version of the software used in [[PLDL'17, PLDL'17a, PLDL'17b, PLDL'18, PLDL'19](#references)]. Two main approaches are implemented: a *content-based* approach and a *graph-based* approach, which can also be used jointly. This software was used in [[C'19, CLDL'19, CLDL'20, C'24](#references)] (cf. these publications for more details).
 
+If you use this software or the related data, please cite reference[[CLDL'19](#references)]
+```bibtex
+@InProceedings{Cecillon2019,
+  author    = {Cécillon, Noé and Labatut, Vincent and Dufour, Richard and Linarès, Georges},
+  title     = {Abusive Language Detection in Online Conversations by Combining Content- and Graph-based Features},
+  booktitle = {International Workshop on Modeling and Mining Socia-Media Driven Complex Networks},
+  year      = {2019},
+  volume    = {2},
+  series    = {Frontiers in Big Data},
+  pages     = {8},
+  doi       = {10.3389/fdata.2019.00008},
+}
+```
 
-# Data
+
+## Data
 This software was applied to a corpus of chat messages written in French, whih unfortunately cannot be published due to legal matters [[PLDL'17, PLDL'17a, PLDL'17b, PLDL'18, PLDL'19, C'19, CLDL'19](#references)]. The conversational graphs extracted from these messages are publicly available on [Zenodo](https://doi.org/10.5281/zenodo.6815312), though, and can be used by this softwaree. It was also applied to some public data: a corpus of Wikipedia conversations annotated for 3 types of abuse [[CLDL'20](#references)], which is also available on [Zenodo](https://doi.org/10.5281/zenodo.6817093).
 
 
-# Organization
+## Organization
 Here are the folders composing the project:
 * Folder `content-based`: contains the source code of the *content-based* approach.
     * Folder `Features`: contains the scripts to compute features.
@@ -32,7 +45,7 @@ Here are the folders composing the project:
 * Folder `train-dev-test`: contains the train, development and test splits that we used in [[CLDL'20](#references)].
 
 
-# Use
+## Use
 1. For the *content-based* approach, run the main script `content-based/main.py` with the following arguments:
     * `annotations`: Path to the file containing annotations such as *annotations_attack.csv* on [Zenodo](https://doi.org/10.5281/zenodo.6817093).
     * `messagesdir`: Path to the directory containing all conversation files.
@@ -50,7 +63,7 @@ Here are the folders composing the project:
     * `directed`: To use directed graphs.
 
 
-# References
+## References
 * **[PLDL'17]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Detection of abusive messages in an on-line community*, 14ème Conférence en Recherche d'Information et Applications (CORIA), Marseille, FR, p.153–168, 2017. [doi: 10.24348/coria.2017.16](https://doi.org/10.24348/coria.2017.16) - [⟨hal-01505017⟩](https://hal.archives-ouvertes.fr/hal-01505017)
 * **[PLDL'17a]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Graph-based Features for Automatic Online Abuse Detection*, 5th International Conference on Statistical Language and Speech Processing (SLSP), Le Mans, FR, Lecture Notes in Artificial Intelligence, 10583:70-81, 2017. [doi: 10.1007/978-3-319-68456-7_6](https://doi.org/10.1007/978-3-319-68456-7_6) - [⟨hal-01571639⟩](https://hal.archives-ouvertes.fr/hal-01571639)
 * **[PLDL'17b]** É. Papegnies, V. Labatut, R. Dufour, and G. Linarès. *Détection de messages abusifs au moyen de réseaux conversationnels*, 8ème Conférence sur les modèles et lánalyse de réseaux : approches mathématiques et informatiques (MARAMI), La Rochelle, FR, 2017. [⟨hal-01614279⟩](https://hal.archives-ouvertes.fr/hal-01614279)
